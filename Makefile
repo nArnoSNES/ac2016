@@ -1,8 +1,8 @@
 # path to snesdev root directory (for emulators, devkitsnes, libsnes)
-export DEVKITSNES := /home/pi/snesdev
+export DEVKITSNES := $(HOME)/snesdev
 
 # path to devkitsnes root directory for compiler
-export DEVKIT65XX := /home/pi/snesdev/devkitsnes
+export DEVKIT65XX := $(HOME)/snesdev/devkitsnes
 
 #---------------------------------------------------------------------------------
 .SUFFIXES:

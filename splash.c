@@ -30,6 +30,15 @@ void splash(void) {
 		pad0 = padsCurrent(0);
 		WaitForVBlank();
 	}
+
+	// OK, this one need some explanation.
+	// The rand() function of the framework use a seed to generate pseudo-number
+	// But with the unmodified PVSNESLIB framework, the seed is ALWAYS the same.
+	// So, it will look random once, but it will always be the same set of num
+	// between console reset.
+	// I modified the console.c source of the framework to add a function to
+	// set the seed. I wait for the player to press start and use the number
+	// of vertical blanking since reset as seed. Yeah, a little bit better!
 	srand(snes_vblank_count);
 	consoleDrawText(12,10,"         ");
 	consoleDrawText(1,14,"                              ");
