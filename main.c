@@ -11,10 +11,14 @@
 int main(void) {
 	consoleInit();
 
+	// Display splash screen (once)
+	splash();
+
 	// As Usual, don't exit the main()
 	while(1) {
-		// Display splash screen
-		splash();
+
+		// Display title screen
+		title();
 
 		// Init score
 		int hs = 0;

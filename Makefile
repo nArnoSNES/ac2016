@@ -90,12 +90,16 @@ snesfont-rot.pic: snesfont-rot.bmp
 bg1.pic: bg1.bmp
 	@echo convert without rearranging color order ... $(notdir $@)
 	$(GFXCONV) -pc16 -n -gs8 -pe0 -fbmp -m $<
+	
+title.pic: title.bmp
+	@echo convert without rearranging color order ... $(notdir $@)
+	$(GFXCONV) -pc16 -n -gs8 -pe0 -fbmp -m $<
 
 sprites.pic: sprites.bmp
 	@echo convert bitmap ... $(notdir $@)
 	$(GFXCONV) -gs32 -pc16 -po16 -n $<
 
-bitmaps : bg1.pic snesfont.pic snesfont-rot.pic sprites.pic
+bitmaps : bg1.pic snesfont.pic snesfont-rot.pic sprites.pic title.pic
 
 #---------------------------------------------------------------------------------
 $(OUTPUT).sfc	: $(OFILES)

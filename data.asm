@@ -3,35 +3,43 @@
 .section ".rodata1" superfree
 
 bg1_tiles:
-.incbin "bg1.pic"
+.incbin "bg1.pic" /* 12320 */
 bg1_tiles_end:
 
-sprites:
-.incbin "sprites.pic"
-sprites_end:
+title_tiles:
+.incbin "title.pic" /* 17248 */
+title_tiles_end:
+
+snesfont: .incbin "snesfont.pic" /* 3072 */
+
+sprites_pal:
+.incbin "sprites.pal" /* 32 */
+sprites_pal_end:
 
 .ends
 
 .section ".rodata2" superfree
 
 bg1_map:
-.incbin "bg1.map"
+.incbin "bg1.map" /* 1792 */
 bg1_map_end:
 
 bg1_pal:
-.incbin "bg1.pal"
+.incbin "bg1.pal" /* 512 */
 bg1_pal_end:
 
-sprites_pal:
-.incbin "sprites.pal"
-sprites_pal_end:
+sprites:
+.incbin "sprites.pic" /* 6144 */
+sprites_end:
 
-.ends
+title_map:
+.incbin "title.map" /* 1792 */
+title_map_end:
 
-.section ".rodata3" superfree
+title_pal:
+.incbin "title.pal" /* 512 */
+title_pal_end:
 
-snesfont: .incbin "snesfont.pic"
-
-snesfont_rot: .incbin "snesfont-rot.pic"
+snesfont_rot: .incbin "snesfont-rot.pic" /* 3072 */
 
 .ends
