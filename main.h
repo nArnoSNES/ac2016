@@ -1,4 +1,4 @@
-int play(void);
+int play(int game_mode);
 void splash(void);
-void title(void);
-void printScore(int scorefinal);
+int title(void);
+void printScore(int scorefinal, int highscore);

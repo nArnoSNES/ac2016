@@ -16,40 +16,41 @@ extern char bg1_map, bg1_map_end;
 extern char sprites, sprites_end;
 extern char sprites_pal, sprites_pal_end;
 
-// Init some self-explaining variables
+// Init some self-explaining variables. It is counter-intuitive but most variable MUST be global
+// Otherwise TCC does a real crappy job of constantly swapping non-global variable on and off the stack
+// Optimore will take care of optimizing this once in assembly
 int life;
 int score;
+int frameskip;
+int counter;
+int gameover;
+int speed;
+int mul;
 
-// And now, for an ugly "i don't know C" hack to display score
 char lifeStr[1];
 char scoreStr[3];
-
-int scoreCent = 0;
-int scoreTen = 0;
-int scoreUnit = 0;
+char tempStr[1];
 
 // Print in-game score and lives left
 void printInfo(void) {
-	// Since i'm printing in tate, i can't use the normal consoleDrawText
-	// to display the whole score. And since i was too tired to figure
-	// how to get each character of the string one by one...
-	// Soooo, i just divided the score into hundreds, tens and units.
-	// NOW, YOU CAN LAUGH AT ME >_<
 
         sprintf(lifeStr,"%u",life);
         consoleDrawText(4,12,lifeStr);
 
-        scoreCent = score/100;
-        sprintf(scoreStr,"%u",scoreCent);
-        consoleDrawText(2,13,scoreStr);
-
-        scoreTen = (score-(scoreCent*100))/10;
-        sprintf(scoreStr,"%u",scoreTen);
-        consoleDrawText(2,12,scoreStr);
-
-        scoreUnit = (score-(scoreCent*100)-(scoreTen*10));
-        sprintf(scoreStr,"%u",scoreUnit);
-        consoleDrawText(2,11,scoreStr);
+		// Get the score in a string, padded with 0
+		sprintf(scoreStr,"%03u",score);
+		
+		// Get the first char and display it
+		sprintf(tempStr,"%c",scoreStr[0]);
+		consoleDrawText(2,13,tempStr);
+		
+		// second...
+		sprintf(tempStr,"%c",scoreStr[1]);
+		consoleDrawText(2,12,tempStr);
+		
+		// and third!
+		sprintf(tempStr,"%c",scoreStr[2]);
+		consoleDrawText(2,11,tempStr);
 }
 
 // Describe the player
@@ -166,25 +167,33 @@ Three_color cycleColor(Three_color currentColors) {
 	return newColors;
 }
 
-// Wait 25 frame, so... about a half a second
-void doPause(void) {
+// Wait x frame
+void doPause(int timing) {
         int delay = 0;
-        for (delay=0;delay<25;delay++) WaitForVBlank();
+        for (delay=0;delay<timing;delay++) WaitForVBlank();
         return;
 }
 
 // OK, let's get this shit done
-int play(void) {
+int play(int game_mode) {
 	// This receive the status of the joypad
 	unsigned short pad0;
 	
-	//
+	// Classical
 	life = 3;
+
+	// Set the variables based on game mode
+	if (game_mode == 1) {
+		mul = 2;
+		speed = 1;
+	} else {
+		mul = 1;
+		speed = 6;
+	}
 	score = 0;
-	int frameskip = 0;
-	int counter = 0;
-	int gameover = 0;
-	int speed = 6;
+	frameskip = 0;
+	counter = 0;
+	gameover = 0;
 
 	// generate a first line. rand() is a random int, so, modulo 3 will be 0, 1 or 2.
 	Line line = {40,rand() % 3,rand() % 3,rand() % 3};
@@ -247,13 +256,40 @@ int play(void) {
 	printInfo();
 	
 	// Wait a bit before starting the fight!
-	doPause();
+	doPause(60);
 	
 	// And let's PLAY!
 	while(!gameover) {
 		
 		// Read joypad state	
 		pad0 = padsCurrent(0);
+    
+		// Did the player hit start?
+		if(pad0 & KEY_START) {
+			// Let's do a PAUSE! First remove all sprites. Let's be fair :D
+			int i; for (i=0;i<25;i+=4) oamSetVisible(i, OBJ_HIDE);
+			// First wait for the player to release start
+			pad0 = padsCurrent(0);
+			while(pad0 & KEY_START) {
+				pad0 = padsCurrent(0);
+				WaitForVBlank();
+			}
+			// Secondly, to quit pause, wait the player to press start again
+			pad0 = padsCurrent(0);
+			while(!(pad0 & KEY_START)) {
+				pad0 = padsCurrent(0);
+				WaitForVBlank();
+			}
+			// And finally, to avoid going immediatly back to pause, wait for release again
+			pad0 = padsCurrent(0);
+			while(pad0 & KEY_START) {
+				pad0 = padsCurrent(0);
+				WaitForVBlank();
+			}
+			// Print the sprites back
+			movePlayer(player);
+			printLine(line);
+		} // NB: THIS is clean way but NOT a great way to pause. Why? The player CAN pause buffer.
     
 		// First, movement.	
 		if(pad0 & KEY_LEFT) {
@@ -295,15 +331,15 @@ int play(void) {
 								break;
 							case 1:
 								// It's an egg! 
-								if (player.s == 0) score++; // The player is in the normal state to gain score.
-								else score--; // Damn! The player broke the egg! Lose score.
+								if (player.s == 0) score += mul; // The player is in the normal state to gain score.
+								else score -= mul; // Damn! The player broke the egg! Lose score.
 								if (score < 0) score = 0; // Don't let the score go below 0.
 								break;
 							case 2:
 								// It's a beholder! If the player is not "switched", it will lose a live.
 								if (player.s == 0) {
 									life--; 
-									doPause();
+									doPause(60);
 								}
 								break;
 								
@@ -314,14 +350,14 @@ int play(void) {
 							case 0:
 								break;
 							case 1:
-								if (player.s == 0) score++;
-								else score--;
+								if (player.s == 0) score += mul;
+								else score -= mul;
 								if (score < 0) score = 0;
 								break;
 							case 2:
 								if (player.s == 0) {
 									life--;
-									doPause();
+									doPause(60);
 								}
 								break;
 						}
@@ -331,14 +367,14 @@ int play(void) {
 							case 0:
 								break;
 							case 1:
-								if (player.s == 0) score++;
-								else score--;
+								if (player.s == 0) score += mul;
+								else score -= mul;
 								if (score < 0) score = 0;
 								break;
 							case 2:
 								if (player.s == 0) {
 									life--;
-									doPause();
+									doPause(60);
 								}
 								break;
 						}
@@ -361,13 +397,14 @@ int play(void) {
 		printLine(line);
 		
 		// THIS, is me being a sadist. Speed increase with the score.
+		// In case of mode B (=1) don't go below speed 1
 		if (score > 100) speed = 0;
 		else if (score > 50) speed = 1;
-		else if (score > 30) speed = 2;
-		else if (score > 20) speed = 3;
-		else if (score > 10) speed = 4;
-		else if (score > 5) speed = 5;
-		else speed = 6;
+		else if (score > 30 && game_mode != 1) speed = 2;
+		else if (score > 20 && game_mode != 1) speed = 3;
+		else if (score > 10 && game_mode != 1) speed = 4;
+		else if (score > 5 && game_mode != 1) speed = 5;
+		else if (game_mode != 1 ) speed = 6;
 		
 		// Wait for next frame.
 		WaitForVBlank();
@@ -380,7 +417,7 @@ int play(void) {
 	setFadeEffect(FADE_OUT);
 
 	// A small pause.
-	doPause();
+	doPause(90);
 
 	// Exit with the score for display in next screen
 	return score;

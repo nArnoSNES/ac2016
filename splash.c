@@ -10,11 +10,11 @@
 #include "common.h"
 
 extern char snesfont;
-int counter = 0;
 
 //---------------------------------------------------------------------------------
 void splash(void) {
    
+    int counter = 0;
 	consoleInitText(0, 0, &snesfont);
 	consoleSetShadowCol(0,RGB15(16,16,16));
 

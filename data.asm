@@ -7,10 +7,8 @@ bg1_tiles:
 bg1_tiles_end:
 
 title_tiles:
-.incbin "title.pic" /* 17248 */
+.incbin "title.pic" /* 19936 */
 title_tiles_end:
-
-snesfont: .incbin "snesfont.pic" /* 3072 */
 
 sprites_pal:
 .incbin "sprites.pal" /* 32 */
@@ -41,5 +39,7 @@ title_pal:
 title_pal_end:
 
 snesfont_rot: .incbin "snesfont-rot.pic" /* 3072 */
+
+snesfont: .incbin "snesfont.pic" /* 3072 */
 
 .ends

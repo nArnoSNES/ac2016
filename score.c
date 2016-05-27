@@ -11,14 +11,13 @@
 
 extern char snesfont_rot;
 
-//---------------------------------------------------------------------------------
-void printScore(int scorefinal) {
-	unsigned short pad0;
-	char scoreStr[3];
-	int scoreCent = 0;
-	int scoreTen = 0;
-	int scoreUnit = 0;
-    
+int delay;
+char scoreHolder[3];
+char tempHolder[1];
+
+// This display the final score of the player. It will get better looking :D
+void printScore(int scorefinal, int highscore) {
+
 	consoleInitText(0, 0, &snesfont_rot);
 	consoleSetShadowCol(0,RGB15(16,16,16));
 
@@ -45,37 +44,41 @@ void printScore(int scorefinal) {
 	consoleDrawText(11,posy--," ");
 	consoleDrawText(11,posy--,":");
 
-	scoreCent = scorefinal/100;
-	sprintf(scoreStr,"%u",scoreCent);
-	consoleDrawText(13,15,scoreStr);
-	
-	scoreTen = (scorefinal-(scoreCent*100))/10;
-	sprintf(scoreStr,"%u",scoreTen);
-	consoleDrawText(13,14,scoreStr);
-	
-	scoreUnit = (scorefinal-(scoreCent*100)-(scoreTen*10));
-	sprintf(scoreStr,"%u",scoreUnit);
-	consoleDrawText(13,13,scoreStr);
+	sprintf(scoreHolder,"%03u",scorefinal);
+	sprintf(tempHolder,"%c",scoreHolder[0]);
+	consoleDrawText(13,15,tempHolder);
+	sprintf(tempHolder,"%c",scoreHolder[1]);
+	consoleDrawText(13,14,tempHolder);
+	sprintf(tempHolder,"%c",scoreHolder[2]);
+	consoleDrawText(13,13,tempHolder);
 
+	// Sad placeholder for the highscore
+	// For now it is not saved in sram
 	int posy=21;
-	consoleDrawText(25,posy--,"n");
-	consoleDrawText(25,posy--,"'");
-	consoleDrawText(25,posy--,"A");
-	consoleDrawText(25,posy--,"r");
-	consoleDrawText(25,posy--,"n");
-	consoleDrawText(25,posy--,"o");
-	consoleDrawText(25,posy--," ");
+	consoleDrawText(25,posy--,"T");
+	consoleDrawText(25,posy--,"O");
 	consoleDrawText(25,posy--,"P");
-	consoleDrawText(25,posy--,"B");
+	consoleDrawText(25,posy--," ");
+	consoleDrawText(25,posy--,"S");
+	consoleDrawText(25,posy--,"c");
+	consoleDrawText(25,posy--,"o");
+	consoleDrawText(25,posy--,"r");
+	consoleDrawText(25,posy--,"e");
 	consoleDrawText(25,posy--,":");
 	consoleDrawText(25,posy--," ");
-	consoleDrawText(25,posy--,"1");
-	consoleDrawText(25,posy--,"1");
-	consoleDrawText(25,posy--,"8");
+	
+	sprintf(scoreHolder,"%03u",highscore);
+	sprintf(tempHolder,"%c",scoreHolder[0]);
+	consoleDrawText(25,10,tempHolder);
+	sprintf(tempHolder,"%c",scoreHolder[1]);
+	consoleDrawText(25,9,tempHolder);
+	sprintf(tempHolder,"%c",scoreHolder[2]);
+	consoleDrawText(25,8,tempHolder);
 
-	pad0 = padsCurrent(0);
-	while(!pad0) {
-		pad0 = padsCurrent(0);
+	// Wait a bit before going back to title
+	delay = 0;
+	while(delay<400) {
+		delay++;
 		WaitForVBlank();
 	}
 	return;

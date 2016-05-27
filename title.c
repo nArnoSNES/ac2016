@@ -39,7 +39,9 @@ Three_color cycleColor(Three_color currentColors) {
 	return newColors;
 }
 
-void title(void) {
+int gm;
+
+int title(void) {
 	// This receive the status of the joypad
 	unsigned short pad0;
 
@@ -59,11 +61,9 @@ void title(void) {
 	// Start the snes mode 1
 	setMode(BG_MODE1,0); bgSetDisable(1);  bgSetDisable(2);
 
+	// Wait for an input to start
 	pad0 = padsCurrent(0); 
-
-	// And let's PLAY!
 	while(!pad0) {
-		
 		// Read joypad state	
 		pad0 = padsCurrent(0);
 		
@@ -77,6 +77,9 @@ void title(void) {
 		// Wait for next frame.
 		WaitForVBlank();
 	}
+	l
+	// If game is started with select key, start in mode B (=1)
+	if (pad0 & KEY_SELECT) { gm = 1; } else { gm = 0; }
 	
 	// OK, this one need some explanation.
 	// The rand() function of the framework use a seed to generate pseudo-number
@@ -88,5 +91,5 @@ void title(void) {
 	// of vertical blanking since reset as seed. Yeah, a little bit better!
 	srand(snes_vblank_count);
 
-	return;
+	return gm;
 }
