@@ -77,7 +77,7 @@ int title(void) {
 		// Wait for next frame.
 		WaitForVBlank();
 	}
-	l
+
 	// If game is started with select key, start in mode B (=1)
 	if (pad0 & KEY_SELECT) { gm = 1; } else { gm = 0; }
 	

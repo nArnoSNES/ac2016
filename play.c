@@ -261,6 +261,11 @@ int play(int game_mode) {
 	// And let's PLAY!
 	while(!gameover) {
 		
+		if (player.s == 2) {
+			doPause(60);
+			player.s = 0;
+		}
+		
 		// Read joypad state	
 		pad0 = padsCurrent(0);
     
@@ -338,8 +343,8 @@ int play(int game_mode) {
 							case 2:
 								// It's a beholder! If the player is not "switched", it will lose a live.
 								if (player.s == 0) {
-									life--; 
-									doPause(60);
+									player.s = 2;
+									life--;
 								}
 								break;
 								
@@ -356,8 +361,8 @@ int play(int game_mode) {
 								break;
 							case 2:
 								if (player.s == 0) {
+									player.s = 2;
 									life--;
-									doPause(60);
 								}
 								break;
 						}
@@ -373,8 +378,8 @@ int play(int game_mode) {
 								break;
 							case 2:
 								if (player.s == 0) {
+									player.s = 2;
 									life--;
-									doPause(60);
 								}
 								break;
 						}
@@ -410,14 +415,11 @@ int play(int game_mode) {
 		WaitForVBlank();
 	}
 
-	// Bouhou, you died. Let's hide all sprites (i found out later there is an other function to do that)
-	int i; for (i=0;i<25;i+=4) oamSetVisible(i, OBJ_HIDE);
-
-	// Fade out the screen
-	setFadeEffect(FADE_OUT);
-
 	// A small pause.
 	doPause(90);
+
+	// Bouhou, you died. Let's hide all sprites (i found out later there is an other function to do that)
+	int i; for (i=0;i<25;i+=4) oamSetVisible(i, OBJ_HIDE);
 
 	// Exit with the score for display in next screen
 	return score;
