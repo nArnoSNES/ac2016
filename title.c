@@ -5,6 +5,7 @@
 
 ---------------------------------------------------------------------------------*/
 #include <snes.h>
+#include "common.h"
 
 // Get the address of the included binaries
 extern char title_tiles, title_tiles_end;
@@ -89,7 +90,7 @@ int title(void) {
 	// I modified the console.c source of the framework to add a function to
 	// set the seed. I wait for the player to press start and use the number
 	// of vertical blanking since reset as seed. Yeah, a little bit better!
-	srand(snes_vblank_count);
+	//srand(snes_vblank_count);
 
 	return gm;
 }

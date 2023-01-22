@@ -15,7 +15,7 @@ extern char snesfont;
 void splash(void) {
    
     int counter = 0;
-	consoleInitText(0, 0, &snesfont);
+	oldConsoleInitText(0, 0, &snesfont);
 	consoleSetShadowCol(0,RGB15(16,16,16));
 
 	setMode(BG_MODE1,0);  bgSetDisable(1);  bgSetDisable(2);

@@ -216,7 +216,7 @@ int play(int game_mode) {
 	// Another Reminder. I'm lazy and using the built-in Alekmaul console text functions (as BG0)
 	// void consoleInitText(u8 bgNumber,u8 paletteNumber, u8 *gfxText)
 	// I'm using "paletteNumber" 1 to avoid corrupting the real BG colors (even if i left those aside in case)
-	consoleInitText(0, 1, &snesfont_rot);
+	oldConsoleInitText(0, 1, &snesfont_rot);
 	
 	// Set the Text colors. BTW: Color 0 is transparent anyway.
 	consoleSetTextCol(RGB15(10,10,6),RGB15(0,0,0));
